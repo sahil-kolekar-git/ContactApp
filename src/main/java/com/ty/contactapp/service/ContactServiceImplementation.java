@@ -29,6 +29,11 @@ public class ContactServiceImplementation implements ContactService {
 		contactRepository.deleteById(id);
 	}
 
+	@Override
+	public void delete(Contact contact) {
+		contactRepository.delete(contact);
+	}
+
 //	@Override
 //	public boolean findByAadhar(Long aadhar) {
 //		Optional<Contact> opt = contactRepository.findByAadhar(aadhar);

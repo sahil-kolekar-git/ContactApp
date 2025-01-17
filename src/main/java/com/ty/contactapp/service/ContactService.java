@@ -12,5 +12,7 @@ public interface ContactService {
 	
 	void deleteById(Integer id);
 
+	void delete(Contact contact);
+
 	// boolean findByAadhar(Long aadhar);
 }

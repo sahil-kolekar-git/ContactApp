@@ -93,22 +93,23 @@ button {
 		<h2>Contact Form</h2>
 		<h5>${msg}</h5>
 		<form action="update" method="POST">
-			<label for="name">Enter id:</label> <input type="number" id="name"
-				name="id" required placeholder="Enter your id number">
+			<label for="name"></label> <input type="hidden" id="name"
+				name="id" required placeholder="Enter your id number"
+				value="${contact.id}">
 
 			<!-- Name field -->
 			<label for="name">Full Name:</label> <input type="text" id="name"
-				name="name" required placeholder="Enter your full name">
+				name="name" required placeholder="Enter your full name" value="${contact.name}">
 
 			<!-- Aadhar field -->
 			<label for="aadhar">Aadhar Number:</label> <input type="text"
 				id="aadhar" name="aadhar" required
-				placeholder="Enter your Aadhar number">
+				placeholder="Enter your Aadhar number" value="${contact.aadhar}">
 
 			<!-- Phone field -->
 			<label for="phone">Phone Number:</label> <input type="text"
 				id="phone" name="phone" required
-				placeholder="Enter your phone number">
+				placeholder="Enter your phone number" value="${contact.phone}">
 
 			<!-- Add Contact Button -->
 			<button type="submit" class="add-contact">Update Contact</button>

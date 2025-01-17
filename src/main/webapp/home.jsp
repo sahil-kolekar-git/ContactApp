@@ -109,8 +109,9 @@ tr:hover {
 	<!-- Navbar -->
 	<nav>
 		<a href="#add" class="active">Dashboard</a> <a href="addcontact">Add
-			Contacts</a> <a href="logout">Logout</a><a href="delete">Delete
-			Contact</a><a href="update">Update Contact</a>
+			Contacts</a> <a href="logout">Logout</a>
+		<!--<a href="delete">Delete
+			Contact</a><a href="update">Update Contact</a> -->
 	</nav>
 
 	<!-- Main Content -->
@@ -128,10 +129,8 @@ tr:hover {
 						<th>Id</th>
 						<th>Name</th>
 						<th>Phone</th>
-						<%--
 						<th>Delete</th>
 						<th>Update</th>
-						 --%>
 					</tr>
 				</thead>
 				<%
@@ -142,10 +141,8 @@ tr:hover {
 						<td><%=contact.getId()%></td>
 						<td><%=contact.getName()%></td>
 						<td><%=contact.getPhone()%></td>
-						<%-- 
-						<td><a href="delete">Delete</a></td>
-						<td><a href="update">Update</a></td>
-						 --%>
+						<td><a href="update?id=<%=contact.getId()%>">Update</a></td>
+						<td><a href="delete?id=<%=contact.getId()%>">Delete</a></td>
 					</tr>
 
 				</tbody>
