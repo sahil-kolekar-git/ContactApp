@@ -1,18 +1,28 @@
 package com.ty.contactapp.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ty.contactapp.entity.Contact;
 import com.ty.contactapp.entity.User;
+import com.ty.contactapp.service.ContactService;
 import com.ty.contactapp.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @org.springframework.stereotype.Controller
 public class Controller {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ContactService contactService;
 
 	@GetMapping("/")
 	public ModelAndView register() {
@@ -24,7 +34,6 @@ public class Controller {
 	@PostMapping("/save")
 	public ModelAndView register(User user) {
 
-		System.out.println(user);
 		boolean register = userService.register(user);
 		if (register) {
 			ModelAndView mv = new ModelAndView("login.jsp");
@@ -36,6 +45,140 @@ public class Controller {
 			return mv;
 		}
 
+	}
+
+	@PostMapping("/login")
+	public ModelAndView login(HttpServletRequest request) {
+		String email = (String) request.getParameter("email");
+		String password = (String) request.getParameter("password");
+
+		Optional<User> opt = userService.findByEmail(email);
+
+		if (opt.isPresent() && password.equals(opt.get().getPassword())) {
+			User user = opt.get();
+			HttpSession session = request.getSession(true);
+			session.setAttribute("uid", user.getUid());
+			ModelAndView mv = new ModelAndView("home.jsp");
+			mv.addObject("contacts", user.getContacts());
+			return mv;
+		} else {
+			ModelAndView mv = new ModelAndView("login.jsp");
+			mv.addObject("msg", "Invalid Credentials");
+			return mv;
+		}
+	}
+
+	@GetMapping("/login")
+	public String login() {
+		return "login.jsp";
+	}
+
+	@GetMapping("/addcontact")
+	public ModelAndView addContact() {
+		
+		ModelAndView mv = new ModelAndView("contact.jsp");
+		mv.addObject("contact", new Contact());
+		
+		return mv;
+	}
+
+	@PostMapping("/addcontact")
+	public ModelAndView addContactData(Contact contact, HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		Integer uid = (Integer) session.getAttribute("uid");
+
+		System.out.println(uid);
+		Optional<User> user = userService.findById(uid);
+		contact.setUser(user.get());
+
+		// boolean present = contactService.findByAadhar(contact.getAadhar());
+		System.out.println(contact.getAadhar());
+//		if (present) {
+//			ModelAndView mv = new ModelAndView();
+//			mv.setViewName("contact.jsp");
+//			mv.addObject("msg", "Contact Already exitsts");
+//			return mv;
+//		} else {
+		contactService.saveContact(contact);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("home.jsp");
+		mv.addObject("contacts", user.get().getContacts());
+		return mv;
+		// }
+
+	}
+
+	@GetMapping("logout")
+	public String getMethodName(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession(false);
+		session.invalidate();
+		
+		return "login.jsp";
+	}
+
+	@GetMapping("/delete")
+	public String deleteContact() {
+		return "delete.jsp";
+	}
+
+	@PostMapping("/delete")
+	public ModelAndView deleteContactInfo(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		Integer id1 = (Integer) session.getAttribute("uid");
+
+		Optional<User> user1 = userService.findById(id1);
+		User user = user1.get();
+
+		Integer id = Integer.parseInt(request.getParameter("id"));
+		contactService.deleteById(id);
+
+		ModelAndView mv = new ModelAndView("home.jsp");
+		mv.addObject("contacts", user.getContacts());
+		
+		return mv;
+	}
+
+	@GetMapping("/update")
+	public ModelAndView updateContact() {
+
+		ModelAndView mv = new ModelAndView("update.jsp");
+		mv.addObject("contact", new Contact());
+
+		return mv;
+	}
+
+	@PostMapping("/update")
+	public ModelAndView updateContactData(HttpServletRequest request, Contact contact) {
+		HttpSession session = request.getSession(false);
+
+		Integer uid = (Integer) session.getAttribute("uid");
+
+		Optional<User> opt = userService.findById(uid);
+		User user = opt.get();
+
+		Integer id1 = Integer.parseInt(request.getParameter("id"));
+		Optional<Contact> con = contactService.findById(id1);
+
+		if (con.isPresent()) {
+			Contact up = con.get();
+			if (contact.getName() != null) {
+				up.setName(contact.getName());
+			}
+			if (contact.getAadhar() != null) {
+				up.setAadhar(contact.getAadhar());
+			}
+			if (contact.getPhone() != null) {
+				up.setPhone(contact.getPhone());
+			}
+
+			contactService.saveContact(up);
+		}
+
+		ModelAndView mv = new ModelAndView("home.jsp");
+		mv.addObject("contacts", user.getContacts());
+
+		return mv;
 	}
 
 }

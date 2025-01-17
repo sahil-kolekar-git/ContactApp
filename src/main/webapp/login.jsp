@@ -128,7 +128,7 @@ h2 {
 	<div class="login-container">
 		<h2>Login</h2>
 		<h4>${msg}</h4>
-		<form action="#" method="POST">
+		<form action="login" method="POST">
 			<div class="form-group">
 				<label for="email">Email Address</label> <input type="email"
 					id="email" name="email" required placeholder="Enter your email">
@@ -142,7 +142,7 @@ h2 {
 		</form>
 		<div class="forgot-password">
 			<p>
-				<a href="#">Forgot your password?</a>
+				<a href="/">Register Here</a>
 			</p>
 		</div>
 	</div>
